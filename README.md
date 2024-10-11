@@ -242,21 +242,34 @@ This repo wouldn't be possible without the awesome
 
 # BERTScore для русского языка
 Этот репозиторий является форком оригинальной реализации BERTScore, расширенной для оценки сгенерированных текстов на русском языке. Основная цель данной работы — исследование и выбор наиболее релевантных векторных представлений для текстов на русском языке в рамках метрики BERTScore. В результате исследования мы сравнили 30 моделей, поддерживающих русский язык. Наиболее релевантные векторные представления принадлежат 20 слою модели "ai-forever/ru-en-RoSBERTa".
-![](./models.png "Models")
 
-#### Авторы:
-* Елена Бручес
-* Иван Бондаренко
-* Дари Батурова
+Для более подробного изучения нашего исследования вы можете ознакомиться с [презентацией](https://docs.google.com/presentation/d/1Udsd5PxptVR3QSrxIWCnF2fuExILbqxy5gVTGeR6id0/edit?usp=sharing).
 
-### Обзор
-Исследование в оригинальной статье BERTScore охватывало только английский, китайский и турецкий языки, что не дает возможности сделать выводы о том, какая модель лучше всего подходит для оценки качества текстов на русском языке. Поэтому было решено провести анализ корреляции между моделями, поддерживающими русский язык, и экспертными оценками, чтобы разработать рекомендации по выбору оптимальных моделей для оценки качества сгенерированных текстов.
+### Результаты:
+#### Корреляции метрик для текстов, сгенерированных Gigachat
+|Dataset|Best embedding|BERTScore|Best embedding (ru)|BERTScore (ru)|BLEU|ROUGE-1|ROUGE-2|ROUGE-L|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|tg|microsoft/mdeberta-v3-base (7)|0.827|ai-forever/ruBert-base (22)|0.825|0.423|0.645|0.497|0.607|
+|ru_simple_sent_eval|google/byt5-large (31)|0.615|ai-forever/ru-en-RoSBERTa (20)|0.673|0.096|0.281|0.149|0.25|
+|science|facebook/mbart-large-50 (10)|0.749|ai-forever/ru-en-RoSBERTa (20)|0.749|0.282|0.599|0.481|0.560|
+|dialogsum_ru|facebook/mbart-large-cc25 (11)|0.447|ai-forever/ru-en-RoSBERTa (7)|0.415|0.158|0.236|0.114|0.247|
+|reviews_russian|facebook/mbart-large-50-many-to-many-mmt (6)|0.678|ai-forever/ru-en-RoSBERTa (20)|0.655|0.178|0.346|0.206|0.346|
+|yandex|google/byt5-base (6)|0.433|ai-forever/ru-en-RoSBERTa (23)  |0.454|0.078|0.192|0.165|0.192|
+ 
+|AVG (слой)|google/byt5-large (29)|0.594|ai-forever/ru-en-RoSBERTa (20)|0.630|0.191|0.379|0.257|0.359|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|AVG (модель)|google/byt5-large|0.561|ai-forever/ruBert-base|0.564|0.191|0.379|0.257|0.359|
 
-#### Наборы данных
-Для определения наиболее релевантной модели, с помощью которой оценивается качество сгенерированного текста, мы собрали из открытых источников несколько датасетов, которые различаются по задачам, предметным областям, длине текстов и другим характеристикам. В данной работе мы использовали следующие датасеты:
-1. [dialogsum-ru](https://huggingface.co/datasets/d0rj/dialogsum-ru) – датасет для задачи саммаризации диалогов. Исходный датасет DialogSum содержит 13 460 диалогов на английском языке на повседневные темы. Русскоязычный датасет был получен путём перевода текстов на русский язык с помощью Google Translate.
-2. [reviews-russian](https://huggingface.co/datasets/trixdade/reviews_russian) – датасет для суммаризации отзывов пользователей на отели и гостиницы. Содержит 92 текста.
-3. ru-simple-sent-eval – датасет для задачи упрощения текстов на русском языке.
-4. science-summarization-dataset – датасет для задачи суммаризации научных статей. Содержит 480 статей и их аннотаций из 8 различных научных областей: лингвистика, история, юриспруденция, медицина, компьютерные науки, экономика, химия.
-5. [telegram-financial-sentiment-summarization](https://huggingface.co/datasets/mxlcw/telegram-financial-sentiment-summarization) – датасет, который содержит тексты постов из Телеграмма и их краткие содержания. Тексты в данном датасете, в основном, посвящены экономическим и политическим темам.
-6. [yandex-jobs](https://huggingface.co/datasets/Kirili4ik/yandex_jobs) – датасет, который содержит описания вакансий Яндекса. Задача заключается в генерации наиболее релевантного названия должности для каждой из вакансий.
+#### Корреляции метрик для текстов, сгенерированных YandexGPT
+|Dataset|Best embedding|BERTScore|Best embedding (ru)|BERTScore (ru)|BLEU|ROUGE-1|ROUGE-2|ROUGE-L|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|tg|microsoft/mdeberta-v3-base (8)|0.299|ai-forever/ruBert-base (7) |0.345|0.157|0.238|0.197|0.239|
+|ru_simple_sent_eval|xlm-roberta-large (16)|0.224|ai-forever/ru-en-RoSBERTa (21) |0.170|0.068|0.079|0.051|0.067|
+|science|distilbert-base-multilingual-cased (5)|0.217|ai-forever/ru-en-RoSBERTa (20)|0.199|0.017|0.116|0.134|0.122|
+|dialogsum_ru|google/mt5-xl (23)|0.291|ai-forever/ru-en-RoSBERTa (22) |0.333|0.077|0.149|0.157|0.155|
+|reviews_russian|google/mt5-xl (23)|0.418|ai-forever/ruSciBERT (10)|0.397|0.138|0.234|0.176|0.213|
+|yandex|google/byt5-base (10)|0.509|ai-forever/ruBert-base (0)|0.488|0.169|0.303|0.214|0.301|
+ 
+|AVG (слой)|google/byt5-base (10)|0.284|ai-forever/ru-en-RoSBERTa (20)|0.275|0.096|0.171|0.138|0.166
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|AVG (модель)|facebook/mbart-large-50-many-to-many-mmt|0.249|ai-forever/ruBert-base|0.260|0.096|0.171|0.139|0.166|
