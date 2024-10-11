@@ -239,3 +239,71 @@ Please see this [Google sheet](https://docs.google.com/spreadsheets/d/1RKOVpselB
 ### Acknowledgement
 This repo wouldn't be possible without the awesome
 [bert](https://github.com/google-research/bert), [fairseq](https://github.com/pytorch/fairseq), and [transformers](https://github.com/huggingface/transformers).
+
+# BERTScore для русского языка
+Этот репозиторий является форком оригинальной реализации BERTScore, расширенной для оценки сгенерированных текстов на русском языке. Основная цель данной работы — исследование и выбор наиболее релевантных векторных представлений для текстов на русском языке в рамках метрики BERTScore. В результате исследования мы сравнили 30 моделей, поддерживающих русский язык. Наиболее релевантные векторные представления принадлежат 20 слою модели "ai-forever/ru-en-RoSBERTa".
+
+Для более подробного изучения нашего исследования вы можете ознакомиться с [презентацией](https://docs.google.com/presentation/d/1Udsd5PxptVR3QSrxIWCnF2fuExILbqxy5gVTGeR6id0/edit?usp=sharing).
+
+### Результаты:
+#### Корреляции метрик для текстов, сгенерированных Gigachat
+|Dataset|Best embedding|BERTScore|Best embedding (ru)|BERTScore (ru)|BLEU|ROUGE-1|ROUGE-2|ROUGE-L|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|tg|microsoft/mdeberta-v3-base (7)|0.827|ai-forever/ruBert-base (22)|0.825|0.423|0.645|0.497|0.607|
+|ru_simple_sent_eval|google/byt5-large (31)|0.615|ai-forever/ru-en-RoSBERTa (20)|0.673|0.096|0.281|0.149|0.25|
+|science|facebook/mbart-large-50 (10)|0.749|ai-forever/ru-en-RoSBERTa (20)|0.749|0.282|0.599|0.481|0.560|
+|dialogsum_ru|facebook/mbart-large-cc25 (11)|0.447|ai-forever/ru-en-RoSBERTa (7)|0.415|0.158|0.236|0.114|0.247|
+|reviews_russian|facebook/mbart-large-50-many-to-many-mmt (6)|0.678|ai-forever/ru-en-RoSBERTa (20)|0.655|0.178|0.346|0.206|0.346|
+|yandex|google/byt5-base (6)|0.433|ai-forever/ru-en-RoSBERTa (23)  |0.454|0.078|0.192|0.165|0.192|
+ 
+|AVG (слой)|google/byt5-large (29)|0.594|ai-forever/ru-en-RoSBERTa (20)|0.630|0.191|0.379|0.257|0.359|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|AVG (модель)|google/byt5-large|0.561|ai-forever/ruBert-base|0.564|0.191|0.379|0.257|0.359|
+
+#### Корреляции метрик для текстов, сгенерированных YandexGPT
+|Dataset|Best embedding|BERTScore|Best embedding (ru)|BERTScore (ru)|BLEU|ROUGE-1|ROUGE-2|ROUGE-L|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|tg|microsoft/mdeberta-v3-base (8)|0.299|ai-forever/ruBert-base (7) |0.345|0.157|0.238|0.197|0.239|
+|ru_simple_sent_eval|xlm-roberta-large (16)|0.224|ai-forever/ru-en-RoSBERTa (21) |0.170|0.068|0.079|0.051|0.067|
+|science|distilbert-base-multilingual-cased (5)|0.217|ai-forever/ru-en-RoSBERTa (20)|0.199|0.017|0.116|0.134|0.122|
+|dialogsum_ru|google/mt5-xl (23)|0.291|ai-forever/ru-en-RoSBERTa (22) |0.333|0.077|0.149|0.157|0.155|
+|reviews_russian|google/mt5-xl (23)|0.418|ai-forever/ruSciBERT (10)|0.397|0.138|0.234|0.176|0.213|
+|yandex|google/byt5-base (10)|0.509|ai-forever/ruBert-base (0)|0.488|0.169|0.303|0.214|0.301|
+ 
+|AVG (слой)|google/byt5-base (10)|0.284|ai-forever/ru-en-RoSBERTa (20)|0.275|0.096|0.171|0.138|0.166
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|AVG (модель)|facebook/mbart-large-50-many-to-many-mmt|0.249|ai-forever/ruBert-base|0.260|0.096|0.171|0.139|0.166|
+
+#### Корреляции BERTScore для наиболее релевантных векторных представлений по всем моделям
+|Модель|Кол-во параметров|Слой|Pearson|
+| --- | --- | --- | --- |
+|ai-forever/ru-en-RoSBERTa|404M|20|0.453|
+|google/byt5-base|528M|8|0.447|
+|google/byt5-large|1.23B|29|0.442|
+|facebook/mbart-large-50-many-to-many-mmt|611M|10|0.433|
+|facebook/mbart-large-50|611M|10|0.430|
+|ai-forever/ruBert-large|427M|22|0.424|
+|google/mt5-xl|3.7M|23|0.421|
+|microsoft/mdeberta-v3-base|280M|8|0.421|
+|ai-forever/ruBert-base|178M|10|0.421|
+|google/mt5-large|1.2B|22|0.413|
+|facebook/mbart-large-cc25|610M|9|0.410|
+|xlm-mlm-100-1280|570M|15|0.403|
+|bert-base-multilingual-cased|179M|6|0.401|
+|ai-forever/FRED-T5-large|820M|13|0.401|
+|ai-forever/ruRoberta-large|355M|20|0.399|
+|bond005/rubert-entity-embedder|180M|4|0.398|
+|DeepPavlov/rubert-base-cased|180M|7|0.398|
+|xlm-roberta-base|279M|6|0.397|
+|xlm-roberta-large|561M|16|0.389|
+|cointegrated/rubert-tiny2|29М|2|0.385|
+|kazzand/ru-longformer-tiny-16384|34.5М|2|0.379|
+|distilbert-base-multilingual-cased|135M|3|0.376|
+|ai-forever/ruSciBERT|123M|10|0.376|
+|kazzand/ru-longformer-large-4096|434М|6|0.373|
+|google/mt5-small|300M|3|0.371|
+|google/mt5-base|580M|4|0.365|
+|ai-forever/ruT5-base|222M|0|0.358|
+|google/byt5-small|300M|1|0.341|
+|ai-forever/ruT5-large|737M|0|0.341|
+|kazzand/ru-longformer-base-4096|148М|6|0.327|
