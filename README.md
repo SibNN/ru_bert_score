@@ -273,3 +273,37 @@ This repo wouldn't be possible without the awesome
 |AVG (слой)|google/byt5-base (10)|0.284|ai-forever/ru-en-RoSBERTa (20)|0.275|0.096|0.171|0.138|0.166
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 |AVG (модель)|facebook/mbart-large-50-many-to-many-mmt|0.249|ai-forever/ruBert-base|0.260|0.096|0.171|0.139|0.166|
+
+#### Корреляции BERTScore для наиболее релевантных векторных представлений по всем моделям
+|Модель|Кол-во параметров|Слой|Pearson|
+| --- | --- | --- | --- |
+|ai-forever/ru-en-RoSBERTa|404M|20|0.453|
+|google/byt5-base|528M|8|0.447|
+|google/byt5-large|1.23B|29|0.442|
+|facebook/mbart-large-50-many-to-many-mmt|611M|10|0.433|
+|facebook/mbart-large-50|611M|10|0.430|
+|ai-forever/ruBert-large|427M|22|0.424|
+|google/mt5-xl|3.7M|23|0.421|
+|microsoft/mdeberta-v3-base|280M|8|0.421|
+|ai-forever/ruBert-base|178M|10|0.421|
+|google/mt5-large|1.2B|22|0.413|
+|facebook/mbart-large-cc25|610M|9|0.410|
+|xlm-mlm-100-1280|570M|15|0.403|
+|bert-base-multilingual-cased|179M|6|0.401|
+|ai-forever/FRED-T5-large|820M|13|0.401|
+|ai-forever/ruRoberta-large|355M|20|0.399|
+|bond005/rubert-entity-embedder|180M|4|0.398|
+|DeepPavlov/rubert-base-cased|180M|7|0.398|
+|xlm-roberta-base|279M|6|0.397|
+|xlm-roberta-large|561M|16|0.389|
+|cointegrated/rubert-tiny2|29М|2|0.385|
+|kazzand/ru-longformer-tiny-16384|34.5М|2|0.379|
+|distilbert-base-multilingual-cased|135M|3|0.376|
+|ai-forever/ruSciBERT|123M|10|0.376|
+|kazzand/ru-longformer-large-4096|434М|6|0.373|
+|google/mt5-small|300M|3|0.371|
+|google/mt5-base|580M|4|0.365|
+|ai-forever/ruT5-base|222M|0|0.358|
+|google/byt5-small|300M|1|0.341|
+|ai-forever/ruT5-large|737M|0|0.341|
+|kazzand/ru-longformer-base-4096|148М|6|0.327|
