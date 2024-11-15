@@ -182,6 +182,9 @@ model2layers = {
     "microsoft/mdeberta-v3-base": 10,  # 0.6778713684091584
     "microsoft/deberta-v3-large": 12,  # 0.6927693082293821
     "khalidalt/DeBERTa-v3-large-mnli": 18,  # 0.7428756686018376
+    "kazzand/ru-longformer-tiny-16384": 2,
+    "kazzand/ru-longformer-base-4096": 6,
+    "kazzand/ru-longformer-large-4096": 6
 }
 
 
@@ -251,6 +254,10 @@ def get_model(model_type, num_layers, all_layers=None):
         from transformers import T5EncoderModel
 
         model = T5EncoderModel.from_pretrained(model_type)
+    elif "ru-longformer" in model_type:
+        from transformers import LongformerForMaskedLM
+
+        model = LongformerForMaskedLM.from_pretrained(model_type)
     else:
         model = AutoModel.from_pretrained(model_type)
     model.eval()
@@ -271,6 +278,13 @@ def get_model(model_type, num_layers, all_layers=None):
             ), f"Invalid num_layers: num_layers should be between 0 and {len(model.layer)} for {model_type}"
             model.layer = torch.nn.ModuleList(
                 [layer for layer in model.layer[:num_layers]]
+            )
+        elif "ru-longformer" in model_type and hasattr(model.config, "num_hidden_layers"):  # ru-longformer
+            assert (
+                0 <= num_layers <= model.config.num_hidden_layers
+            ), f"Invalid num_layers: num_layers should be between 0 and {model.config.num_hidden_layers} for {model_type}"
+            model.longformer.encoder.layer = torch.nn.ModuleList(
+                [layer for layer in model.longformer.encoder.layer[:num_layers]]
             )
         elif hasattr(model, "encoder"):  # albert
             if hasattr(model.encoder, "albert_layer_groups"):
@@ -326,7 +340,11 @@ def get_tokenizer(model_type, use_fast=False):
         model_type = cache_scibert(model_type)
 
     if version.parse(trans_version) >= version.parse("4.0.0"):
-        tokenizer = AutoTokenizer.from_pretrained(model_type, use_fast=use_fast)
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(model_type, use_fast=use_fast)
+        except TypeError:
+            print(f"Fast tokenizer not available for model {model_type}. Using slow tokenizer.")
+            tokenizer = AutoTokenizer.from_pretrained(model_type)
     else:
         assert not use_fast, "Fast tokenizer is not available for version < 4.0.0"
         tokenizer = AutoTokenizer.from_pretrained(model_type)
@@ -347,8 +365,18 @@ def padding(arr, pad_token, dtype=torch.long):
 
 def bert_encode(model, x, attention_mask, all_layers=False):
     model.eval()
+
+    global_attention_mask = None
+    use_global_attention = "longformer" in model.config.architectures[0].lower()
+
+    if use_global_attention:
+        global_attention_mask = torch.zeros_like(attention_mask)
+        global_attention_mask[:,0] = 1
     with torch.no_grad():
-        out = model(x, attention_mask=attention_mask, output_hidden_states=all_layers)
+        if use_global_attention:
+            out = model(x, attention_mask=attention_mask, global_attention_mask=global_attention_mask, output_hidden_states=all_layers)
+        else: 
+            out = model(x, attention_mask=attention_mask, output_hidden_states=all_layers)
     if all_layers:
         emb = torch.stack(out[-1], dim=2)
     else:
